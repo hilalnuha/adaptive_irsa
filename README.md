@@ -2,7 +2,7 @@
 
 Reproducibility package for the article:
 
-> M. Alif Gibran A. Bossa, Hilal Hudan Nuha, and Yusril Izza, "Load-Aware Adaptive Irregular Repetition Slotted ALOHA for Packet Loss Reduction and Throughput Stability in High-Load Wireless Sensor Networks," submitted to *CMES—Computer Modeling in Engineering & Sciences*, Tech Science Press, 2026.
+> M. Alif Gibran A. Bossa, Hilal Hudan Nuha, and Yusril Izza, "Load-Aware Adaptive Irregular Repetition Slotted ALOHA for Reliable Uplink Access in Dense Wireless Sensor Networks," submitted to *AUT Journal of Electrical Engineering*, 2026.
 
 The package contains a Monte Carlo reference implementation of Slotted ALOHA, CRDSA, Standard IRSA, and the proposed load-aware Adaptive IRSA under an ideal collision channel with ideal Successive Interference Cancellation (SIC), together with validation, statistical-analysis, and load-estimation sensitivity scripts.
 
@@ -27,16 +27,18 @@ code/
   validate_implementation.py      # deterministic SIC and accounting checks
   statistical_analysis.py         # run-level tests (Shapiro-Wilk, paired t/Wilcoxon, Holm)
   load_estimation_sensitivity.py  # fixed-bias load-estimation stress test
+  make_figures.py                 # regenerates the article figures
   requirements.txt
 results/
+  run_level_results.csv           # main experiment, one row per protocol x N x G x run (2,400 rows)
+  config.json                     # configuration of the main experiment
+  statistics/                     # outputs of statistical_analysis.py
   sensitivity/                    # load-estimation sensitivity outputs
 ```
 
-Running the main experiment writes `results/run_level_results.csv` and `results/config.json`, and the statistical analysis writes its outputs to `results/statistics/`.
-
 ## Environment
 
-The original results were produced with Python 3.13.5, NumPy 2.3.5, pandas 2.2.3, SciPy 1.17.0, and Matplotlib 3.10.8.
+The pinned versions are Python 3.13.5, NumPy 2.3.5, pandas 2.2.3, SciPy 1.17.0, and Matplotlib 3.10.8. The results in `results/` were regenerated with NumPy 2.5.3, pandas 3.0.5, and SciPy 1.18.1 and match the pinned environment for the sensitivity analysis.
 
 ```bash
 python -m venv .venv
@@ -62,6 +64,12 @@ python code/adaptive_irsa_simulation.py \
   --write-config results/config.json
 python code/statistical_analysis.py results/run_level_results.csv \
   --output-dir results/statistics
+```
+
+Figures:
+
+```bash
+python code/make_figures.py results/run_level_results.csv figures
 ```
 
 Load-estimation sensitivity (N = 10000, high-load region, bias ∈ {−0.10, −0.05, 0, +0.05, +0.10}, 200 frames/run):
